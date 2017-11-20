@@ -295,6 +295,7 @@ def saveInCsv(postsFinal):
 
     df.to_csv(os.path.join(os.path.dirname(__file__), 'data', fileName), index=False, columns=columns, sep=';', quotechar='"')
 
-saveInCsv(addColumnaTituloFacebook())
+postsConTitulo = addColumnaTituloFacebook()
+saveInCsv(postsConTitulo)
 
 
