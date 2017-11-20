@@ -1,0 +1,10 @@
+-el archivo buscarTitulosFacebook_clasificados_laNacion.csv tiene 6 columnas:
+	1-tipo_post
+	1-post_id	
+	3-post_link	
+	4-link	
+	5-link_domain	
+	6-UrlCompleta
+	7-titulo_facebook (vacía)
+
+El script lee el archivo, recorre uno a uno los posteos y de cada uno de ellos recupera el título del enlace
