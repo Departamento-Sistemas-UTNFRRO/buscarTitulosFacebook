@@ -192,9 +192,9 @@ def getTituloFacebook(url):
 	else:
 		return ""
 	
-def loadCsvIntoDataSet():
+def loadCsvIntoDataSet(nombreArchivoEntrada):
 	data_path = ''
-	csv = pd.read_csv(os.path.join(os.path.dirname(__file__), 'data', 'buscarTitulosFacebook_clasificados_laNacion.csv'), header=0, sep=';', quotechar='\'', encoding = "utf-8" )
+	csv = pd.read_csv(nombreArchivoEntrada, header=0, sep=';', quotechar='\'', encoding = "utf-8" )
 	return csv.values
 
 def unshorten_url(url):
@@ -208,8 +208,8 @@ def unshorten_url(url):
 		return resolvedURL.url
 
 
-def addColumnaTituloFacebook():
-    posts = loadCsvIntoDataSet().tolist()
+def addColumnaTituloFacebook(nombreArchivoEntrada):
+    posts = loadCsvIntoDataSet(nombreArchivoEntrada).tolist()
     for i in range(0, 3):
     #for i in range(0, len(posts)-1):
         try:
@@ -295,7 +295,10 @@ def saveInCsv(postsFinal):
 
     df.to_csv(os.path.join(os.path.dirname(__file__), 'data', fileName), index=False, columns=columns, sep=';', quotechar='"')
 
-postsConTitulo = addColumnaTituloFacebook()
+#programaPrincipal
+nombreArchivoEntrada = 	os.path.join(os.path.dirname(__file__), 'data', 'buscarTitulosFacebook_clasificados_laNacion.csv')
+
+postsConTitulo = addColumnaTituloFacebook(nombreArchivoEntrada)
 saveInCsv(postsConTitulo)
 
 
