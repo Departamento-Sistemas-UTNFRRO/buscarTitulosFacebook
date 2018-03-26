@@ -7,4 +7,4 @@
 	6-UrlCompleta
 	7-titulo_facebook (vacía)
 
-El script lee el archivo, recorre uno a uno los posteos y de cada uno de ellos recupera el título del enlace
+El script lee el archivo, recorre uno a uno los posteos y de cada uno de ellos recupera el título del enlace, Hastags y Menciones
