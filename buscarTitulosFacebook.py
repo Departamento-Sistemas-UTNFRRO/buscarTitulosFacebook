@@ -23,35 +23,22 @@ import os
 import csv
 
 
-def getHtml(url):
-    req = urllib.request.Request(url)
+def getHtmlFacebook(urlLink):
+    html = ""
+
     try:
-        resp = urllib.request.urlopen(req)
+        request = urllib.request.Request(urlLink)
+        resp = urllib.request.urlopen(request)
+        html = resp.read()
     except Exception as ex:
         print("ERROR" + str(ex))
-        return None
-    else:
-        html = resp.read()
-        soup = bs4.BeautifulSoup(html, 'html.parser')
-        return soup
+    return html
 
 
-def getHtml2(url):
-
-    req = urllib.request.Request(url)
-    try:
-        resp = urllib.request.urlopen(req)
-    except Exception as ex:
-        print("ERROR" + str(ex))
-        return None
-    else:
-        html = resp.read()
-        return html
-
-
-def getTituloFacebook(url):
-    html = getHtml2(url)
+def getTituloFacebook(urlLink):
+    html = getHtmlFacebook(urlLink)
     titulo = ""
+    subtitulo_post = ""
     mencionesLista = []
     hashtagsLista = []
 
@@ -63,16 +50,20 @@ def getTituloFacebook(url):
 
         html = html.replace(b'<!--', b'')  # Apertura comentario
         html = html.replace(b'-->', b'')  # Cierre Comentario
-        content = bs4.BeautifulSoup(html, 'lxml')
+        contenido = bs4.BeautifulSoup(html, 'lxml')
         # devuelve todos los titulos del los post del html, el que busco esta primero
-        a = content.find_all('div', {'class': 'mbs _6m6 _2cnj _5s6c'})
+        divTitulo = contenido.find_all('div', {'class': 'mbs _6m6 _2cnj _5s6c'})
 
         # Si la lista no esta vacia, tengo un titulo
-        if a:
-            titulo = a[0].getText()
+        if divTitulo:
+            titulo = divTitulo[0].getText()
+
+        divSubtitulo = contenido.find_all('div', {'class': '_6m7 _3bt9'})
+        if divSubtitulo and len(divSubtitulo) > 0:
+            subtitulo_post = divSubtitulo[0].getText()
 
         # Obtengo el bloque del html del post_message del post buscado
-        post_message_html = content.find_all('div', {'class': '_5pbx userContent'})
+        post_message_html = contenido.find_all('div', {'class': '_5pbx userContent _3576'})
 
         for tag in post_message_html:
             menciones = tag.find_all('a', {'class': 'profileLink'})
@@ -84,41 +75,51 @@ def getTituloFacebook(url):
                 hashtagsLista.append(hashtag.getText())
 
     # Devuelvo una tupla con los datos del post
-    return (titulo, mencionesLista, hashtagsLista)
+    return (titulo, subtitulo_post, mencionesLista, hashtagsLista)
 
 
-def loadCsvIntoDataSet(nombreArchivoEntrada):
-    csv = pd.read_csv(nombreArchivoEntrada, header=0, sep=',', quotechar='\"', encoding="utf-8")
-    return csv.values
-
-
-def addColumnaTituloFacebook(nombreArchivoEntrada):
-    posts = loadCsvIntoDataSet(nombreArchivoEntrada).tolist()
-
-    for i in range(0, len(posts) - 1):
+def addColumnaTituloFacebook(posts, inicio, fin):
+    for i in range(inicio, fin):
         try:
-            # print(posts[i][2])
-            url = posts[i][2]
+            print(i)
+            url = posts[i][1]
             datosPost = getTituloFacebook(url)
             posts[i].append(datosPost[0])
             posts[i].append(datosPost[1])
             posts[i].append(datosPost[2])
+            posts[i].append(datosPost[3])
         except Exception as ex:
             print(ex)
             columnas = len(posts[i]) + 1
-            for j in range(columnas, 9):
+            for j in range(columnas, 6):
                 posts[i].append("Error exception")
     return posts
 
 
-def saveInCsv(postsFinal, nombreArchivoSalida):
-    columns = ['tipo_post', 'post_id', 'post_link', 'link', 'link_domain', 'titulo_facebook', 'menciones_facebook', 'hashtags_facebook']
-    df = pd.DataFrame(data=postsFinal, columns=columns)
-    df.to_csv(nombreArchivoSalida, index=False, columns=columns, sep=';', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+def guardarEnCSV(postsFinal, nombreArchivoSalida):
+    columnas = ['post_id', 'post_link', 'titulo_facebook', 'subtitulo_facebook', 'menciones_facebook', 'hashtags_facebook']
+    df = pd.DataFrame(data=postsFinal, columns=columnas)
+    df.to_csv(nombreArchivoSalida, index=False, columns=columnas, sep=';', quoting=csv.QUOTE_ALL, doublequote=True, quotechar='"', encoding="utf-16")
+
+
+def cargarCSVEnDataSet(nombreArchivoEntrada):
+    csv = pd.read_csv(nombreArchivoEntrada, header=0,
+                      sep=',', quotechar='\"', encoding="utf-8")
+    return csv.values
+
+
+def armarRutaDatos(nombreArchivo):
+    rutaADatos = os.path.join(os.path.dirname(__file__), 'data', nombreArchivo)
+    return rutaADatos
 
 
 # programaPrincipal
-nombreArchivoEntrada = os.path.join(os.path.dirname(__file__), 'data', 'post_input.csv')
-nombreArchivoSalida = os.path.join(os.path.dirname(__file__), 'data', 'post_output.csv')
-postsConTitulo = addColumnaTituloFacebook(nombreArchivoEntrada)
-saveInCsv(postsConTitulo, nombreArchivoSalida)
+nombreArchivoEntrada = armarRutaDatos('post_input.csv')
+nombreArchivoSalida = armarRutaDatos('post_output.csv')
+posts = cargarCSVEnDataSet(nombreArchivoEntrada).tolist()
+
+inicio = 0
+fin = len(posts)
+
+postsConTitulo = addColumnaTituloFacebook(posts, inicio, fin)
+guardarEnCSV(postsConTitulo, nombreArchivoSalida)
