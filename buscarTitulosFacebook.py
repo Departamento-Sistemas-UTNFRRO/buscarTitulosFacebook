@@ -16,8 +16,8 @@
 #    along with buscarTitulosFacebook; if not, write to the Free Software
 #    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-import utils.DataSetCSV
-import utils.PostFacebook
+from pyfbutils.DataSetCSV import DataSetCSV
+from pyfbutils.PostFacebook import PostFacebook
 
 
 def agregarInfoPostFacebook(datasetCSV):
@@ -27,7 +27,7 @@ def agregarInfoPostFacebook(datasetCSV):
         try:
             print(i)
             url = posts[i][1]
-            postFacebook = utils.PostFacebook.PostFacebook(url)
+            postFacebook = PostFacebook(url)
             datosPost = postFacebook.getInfoPostFacebook()
             posts[i].append(datosPost[0])
             posts[i].append(datosPost[1])
@@ -48,6 +48,6 @@ columnas = ['post_id', 'post_link', 'titulo_facebook', 'subtitulo_facebook', 'me
 inicio = 0
 fin = None
 
-datasetCSV = utils.DataSetCSV.DataSetCSV(nombreArchivoEntrada, nombreArchivoSalida, columnas, inicio, fin)
+datasetCSV = DataSetCSV(nombreArchivoEntrada, nombreArchivoSalida, columnas, inicio, fin)
 agregarInfoPostFacebook(datasetCSV)
 datasetCSV.guardar()
