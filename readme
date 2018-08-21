@@ -1,8 +1,19 @@
-BuscarTitulosFacebook es un script python compatible con la version 3 que permite a partir
-de un archivo csv recuperar el titulo, las menciones y los hashtags de un grupo de posteos de
-Facebook recuperados con Netvizz.
-El archivo a ingresar post_input.csv, que se encuentra en la carpeta Data, es un archivo csv separado por punto y coma compuesto por 2 columnas:
-1-post_id	
-2-post_link	
-El script lee el archivo, recorre uno a uno los posteos y de cada uno de ellos recupera el titulo, subtitulo, las menciones y los hastags
-y escribe un archivo csv como salida en la carpeta data.
+BuscarTitulosFacebook es un script que permite a partir de un archivo csv recuperar el titulo,
+las menciones y los hashtags de un grupo de posteos de Facebook recuperados con Netvizz.
+El archivo a ingresar post_input.csv, que se encuentra en la carpeta Data, es un archivo csv
+separado por punto y coma compuesto por 2 columnas:
+1- post_id
+2- post_link
+El script lee el archivo, recorre uno a uno los posteos y de cada uno de ellos recupera
+el titulo, subtitulo, las menciones y los hastags y escribe un archivo csv como salida
+en la carpeta data con las siguientes columnas:
+1- post_id
+2- post_link
+3- titulo_facebook
+4- subtitulo_facebook
+5- menciones_facebook
+6- hashtags_facebook
+
+Para ejecutar el script se necesita python3 con la libreria beautifulsoup. Una vez posicionado
+sobre el directorio del proyecto ejecutar:
+$ python3 buscarLinksRotos.py

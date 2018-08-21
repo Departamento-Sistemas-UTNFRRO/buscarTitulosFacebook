@@ -42,7 +42,7 @@ def agregarInfoPostFacebook(datasetCSV):
 
 # programaPrincipal
 nombreArchivoEntrada = 'post_input.csv'
-nombreArchivoSalida = 'post_output.csv'
+nombreArchivoSalida = 'post_output3.csv'
 columnas = ['post_id', 'post_link', 'titulo_facebook', 'subtitulo_facebook', 'menciones_facebook', 'hashtags_facebook']
 
 inicio = 0

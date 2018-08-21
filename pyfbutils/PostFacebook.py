@@ -73,7 +73,7 @@ class PostFacebook(object):
             menciones = tag.find_all('a', {'class': 'profileLink'})
             for mencion in menciones:
                 mencionesLista.append(mencion.getText())
-            print(mencionesLista)
+            # print(mencionesLista)
             hashtags = tag.find_all('span', {'class': '_58cm'})
             for hashtag in hashtags:
                 hashtagsLista.append(hashtag.getText())
