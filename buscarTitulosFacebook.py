@@ -18,14 +18,14 @@
 
 from pyfbutils.DataSetCSV import DataSetCSV
 from pyfbutils.PostFacebook import PostFacebook
-
+import ConfigManager
 
 def agregarInfoPostFacebook(datasetCSV):
     posts = datasetCSV.dataset
 
     for i in range(datasetCSV.inicio, datasetCSV.fin):
         try:
-            print(i)
+            print("post", i)
             url = posts[i][1]
             postFacebook = PostFacebook(url)
             datosPost = postFacebook.getInfoPostFacebook()
@@ -41,13 +41,9 @@ def agregarInfoPostFacebook(datasetCSV):
 
 
 # programaPrincipal
-nombreArchivoEntrada = 'post_input.csv'
-nombreArchivoSalida = 'post_output3.csv'
 columnas = ['post_id', 'post_link', 'titulo_facebook', 'subtitulo_facebook', 'menciones_facebook', 'hashtags_facebook']
 
-inicio = 0
-fin = None
-
-datasetCSV = DataSetCSV(nombreArchivoEntrada, nombreArchivoSalida, columnas, inicio, fin)
+config = ConfigManager.ConfigManager()
+datasetCSV = DataSetCSV(config.input_filename, config.output_filename, columnas, config.input_init, config.input_end)
 agregarInfoPostFacebook(datasetCSV)
 datasetCSV.guardar()
